@@ -1,0 +1,74 @@
+.container {
+  min-height: 100vh;
+  background-color: #eaf3ff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.card {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 20px;
+  max-width: 500px;
+  width: 100%;
+  border: 1px solid #c9ddff;
+  box-shadow: 0 4px 12px rgba(0, 80, 200, 0.1);
+  text-align: center;
+}
+
+.image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1rem;
+}
+
+.name {
+  color: #1e40af;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.specialty,
+.city {
+  color: #2563eb;
+  margin-bottom: 0.3rem;
+  font-weight: 500;
+}
+
+.rating {
+  color: #fbbf24; /* اللون ده للنجوم */
+  font-size: 1.2rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.bio {
+  color: #1d4ed8;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+
+.contact p {
+  color: #2563eb;
+  margin: 0.3rem 0;
+}
+
+.bookBtn {
+  background-color: #2563eb;
+  color: white;
+  padding: 0.8rem 1.2rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.bookBtn:hover {
+  background-color: #1e3a8a;
+}

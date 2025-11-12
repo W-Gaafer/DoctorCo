@@ -1,0 +1,87 @@
+.container {
+  min-height: 100vh;
+  background-color: #eaf3ff; /* Light blue */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  direction: ltr;
+}
+
+.card {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 80, 200, 0.1);
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid #c9ddff;
+}
+
+.title {
+  color: #1e40af; /* Medium blue */
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: #1d4ed8;
+  font-weight: 500;
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.formGroup input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
+}
+
+.registerBtn {
+  background-color: #2563eb;
+  color: white;
+  padding: 0.7rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.registerBtn:hover {
+  background-color: #1e3a8a;
+}
+
+.loginText {
+  text-align: center;
+  margin-top: 1rem;
+  color: #1d4ed8;
+  font-size: 0.9rem;
+}
+
+.loginLink {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.loginLink:hover {
+  text-decoration: underline;
+}

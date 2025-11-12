@@ -1,0 +1,31 @@
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.header {
+  background-color: #1e40af; /* أزرق غامق */
+  color: white;
+  padding: 1rem 2rem;
+  text-align: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.main {
+  flex: 1;
+  padding: 2rem;
+  background-color: #e0f2fe; /* أزرق فاتح */
+}
+
+.footer {
+  background-color: #1e3a8a; /* أزرق غامق داكن */
+  color: white;
+  text-align: center;
+  padding: 0.8rem 0;
+}

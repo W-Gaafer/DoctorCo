@@ -1,0 +1,46 @@
+.section {
+  display: flex;
+  height: 100vh; /* ارتفاع الشاشة كامل */
+}
+
+.section:nth-child(odd) .content {
+  order: 1; /* النص على اليمين */
+}
+
+.section:nth-child(odd) .image {
+  order: 2; /* الصورة على اليسار */
+}
+
+.section:nth-child(even) .content {
+  order: 2; /* النص على اليسار */
+}
+
+.section:nth-child(even) .image {
+  order: 1; /* الصورة على اليمين */
+}
+
+.image {
+  flex: 1; /* ثلث عرض الصورة */
+  background-size: cover;
+  background-position: center;
+}
+
+.content {
+  flex: 2; /* ثلثين عرض المحتوى */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #1e40af; /* أزرق غامق */
+  margin-bottom: 1rem;
+}
+
+.text {
+  font-size: 1.2rem;
+  color: #1e3a8a; /* أزرق متوسط */
+}

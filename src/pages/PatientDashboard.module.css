@@ -1,0 +1,99 @@
+.container {
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.title {
+  color: #1e40af;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  color: #1d4ed8;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #93c5fd;
+  padding-bottom: 0.5rem;
+}
+
+.list {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.card {
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 80, 0.1);
+}
+
+.completed {
+  background-color: #e0f2fe;
+}
+
+.reviewBox {
+  margin-top: 1rem;
+  border-top: 1px solid #bfdbfe;
+  padding-top: 1rem;
+}
+
+.stars {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 0.5rem;
+}
+
+.star,
+.starActive {
+  font-size: 1.5rem;
+  color: #93c5fd;
+  transition: color 0.2s;
+}
+
+.starActive {
+  color: #1d4ed8;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 70px;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  resize: none;
+  outline: none;
+  color: #1e3a8a;
+  background-color: #f8fafc;
+}
+
+.textarea:focus {
+  border-color: #1d4ed8;
+  background-color: white;
+}
+
+.textarea[readonly] {
+  background-color: #f1f5f9;
+  cursor: not-allowed;
+}
+
+.rateBtn,
+.doneBtn {
+  background-color: #1d4ed8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.rateBtn:hover,
+.doneBtn:hover {
+  background-color: #1e3a8a;
+}
