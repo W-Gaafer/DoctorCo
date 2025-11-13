@@ -85,3 +85,16 @@
 .loginLink:hover {
   text-decoration: underline;
 }
+
+.roleOptions {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.roleOptions label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 500;
+}

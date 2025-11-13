@@ -7,6 +7,7 @@ export default function Register() {
     password: "",
     phone: "",
     city: "",
+    role: "patient", // القيمة الافتراضية
   });
 
   function handleChange(e) {
@@ -16,7 +17,7 @@ export default function Register() {
   function handleSubmit(e) {
     e.preventDefault();
     console.log(formData);
-    // Here you'll add the actual registration logic (API or backend)
+    // لاحقًا: هنبعت البيانات دي للـ backend لتسجيل المستخدم
   }
 
   return (
@@ -71,6 +72,34 @@ export default function Register() {
               required
               placeholder="Cairo"
             />
+          </div>
+
+          {/* 🩺 اختيار نوع المستخدم */}
+          <div className={styles.formGroup}>
+            <label>Account Type</label>
+            <div className={styles.roleOptions}>
+              <label>
+                <input
+                  type="radio"
+                  name="role"
+                  value="patient"
+                  checked={formData.role === "patient"}
+                  onChange={handleChange}
+                />
+                Patient
+              </label>
+
+              <label>
+                <input
+                  type="radio"
+                  name="role"
+                  value="doctor"
+                  checked={formData.role === "doctor"}
+                  onChange={handleChange}
+                />
+                Doctor
+              </label>
+            </div>
           </div>
 
           <button type="submit" className={styles.registerBtn}>
