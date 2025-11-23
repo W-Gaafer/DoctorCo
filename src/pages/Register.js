@@ -1,14 +1,17 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./Register.module.css";
 
 export default function Register() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     password: "",
     phoneNumber: "",
     city: "",
-    role: "patient", // القيمة الافتراضية
+    role: "patient",
     specialty: "",
     bio: "",
     image: "",
@@ -35,10 +38,10 @@ export default function Register() {
         fullName: formData.fullName,
         email: formData.email,
         password: formData.password,
-        phoneNumber: formData.phoneNumber,      // ✅ اتأكد إن اسم الحقل في الباك كده
+        phoneNumber: formData.phoneNumber,
         city: formData.city,
-        role: formData.role,                    // "patient" أو "doctor"
-        specialty: formData.specialty || null,  // لو فاضي نخليه null
+        role: formData.role,
+        specialty: formData.specialty || null,
         bio: formData.bio || null,
         image: formData.image || null,
         reservationPrice:
@@ -48,39 +51,25 @@ export default function Register() {
         location: formData.location || null,
       };
 
-      console.log("Calling API...", "https://localhost:54246/api/Auth/register");
-
       const response = await fetch(
         "https://localhost:54246/api/Auth/register",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         }
       );
 
-      console.log("Got response object:", response);
-
-
       if (!response.ok) {
         let message = "Registration failed. Please try again.";
-
         try {
           const errorData = await response.json();
-          if (errorData && errorData.message) {
-            message = errorData.message;
-          }
-        } catch {
-          // ولو مفيش body JSON نسيب الرسالة الافتراضية
-        }
-
+          if (errorData && errorData.message) message = errorData.message;
+        } catch {}
         throw new Error(message);
       }
 
-      const data = await response.json();
-      console.log("Registered user:", data);
+      await response.json();
 
       setSuccessMessage("Account created successfully 🎉");
       setFormData({
@@ -96,10 +85,10 @@ export default function Register() {
         reservationPrice: "",
         location: "",
       });
-      // ممكن تعمل redirect هنا:
-      // window.location.href = "/login";
+
+      // Redirect لصفحة تسجيل الدخول
+      navigate("/login");
     } catch (err) {
-      console.error(err);
       setError(err.message || "Something went wrong");
     } finally {
       setLoading(false);
@@ -113,16 +102,12 @@ export default function Register() {
       <div className={styles.card}>
         <h1 className={styles.title}>Create New Account 🩺</h1>
 
+        {successMessage && (
+          <div className={styles.successMsg}>{successMessage}</div>
+        )}
+        {error && <div className={styles.errorMsg}>{error}</div>}
+
         <form onSubmit={handleSubmit} className={styles.form}>
-          {/* رسالة نجاح */}
-          {successMessage && (
-            <div className={styles.successMsg}>{successMessage}</div>
-          )}
-
-          {/* رسالة خطأ */}
-          {error && <div className={styles.errorMsg}>{error}</div>}
-
-          {/* Full Name */}
           <div className={styles.formGroup}>
             <label>Full Name</label>
             <input
@@ -183,7 +168,7 @@ export default function Register() {
             />
           </div>
 
-          {/* 🩺 اختيار نوع المستخدم */}
+          {/* Account Type */}
           <div className={styles.formGroup}>
             <label>Account Type</label>
             <div className={styles.roleOptions}>
@@ -211,7 +196,7 @@ export default function Register() {
             </div>
           </div>
 
-          {/* حقول خاصة بالدكتور */}
+          {/* Doctor Fields */}
           {isDoctor && (
             <>
               <div className={styles.formGroup}>
