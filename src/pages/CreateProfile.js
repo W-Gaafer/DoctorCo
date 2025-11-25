@@ -42,7 +42,7 @@ export default function CreateProfile() {
     <div className={styles.container}>
       <h1>Create Doctor Profile</h1>
       <form className={styles.form} onSubmit={handleSubmit}>
-        <label>Name:</label>
+        <label>Full Name:</label>
         <input
           type="text"
           name="name"
@@ -69,20 +69,11 @@ export default function CreateProfile() {
           required
         />
 
-        <label>Phone:</label>
+        <label>Phone Number:</label>
         <input
           type="tel"
           name="phone"
           value={formData.phone}
-          onChange={handleChange}
-          required
-        />
-
-        <label>Address:</label>
-        <input
-          type="text"
-          name="address"
-          value={formData.address}
           onChange={handleChange}
           required
         />

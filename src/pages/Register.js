@@ -11,8 +11,9 @@ export default function Register() {
     password: "",
     phoneNumber: "",
     city: "",
+    gender: "male",
     role: "patient",
-    specialty: "",
+    speciality: "",
     bio: "",
     image: "",
     reservationPrice: "",
@@ -40,8 +41,9 @@ export default function Register() {
         password: formData.password,
         phoneNumber: formData.phoneNumber,
         city: formData.city,
+        gender: formData.gender,
         role: formData.role,
-        specialty: formData.specialty || null,
+        speciality: formData.speciality || null,
         bio: formData.bio || null,
         image: formData.image || null,
         reservationPrice:
@@ -78,8 +80,9 @@ export default function Register() {
         password: "",
         phoneNumber: "",
         city: "",
+        gender: "male",
         role: "patient",
-        specialty: "",
+        speciality: "",
         bio: "",
         image: "",
         reservationPrice: "",
@@ -168,6 +171,33 @@ export default function Register() {
             />
           </div>
 
+          <div className={styles.formGroup}>
+            <label>Gender</label>
+            <div className={styles.roleOptions}>
+              <label>
+                <input
+                  type="radio"
+                  name="gender"
+                  value="male"
+                  checked={formData.gender === "male"}
+                  onChange={handleChange}
+                />
+                Male
+              </label>
+
+              <label>
+                <input
+                  type="radio"
+                  name="gender"
+                  value="female"
+                  checked={formData.gender === "female"}
+                  onChange={handleChange}
+                />
+                Female
+              </label>
+            </div>
+          </div>
+
           {/* Account Type */}
           <div className={styles.formGroup}>
             <label>Account Type</label>
@@ -200,11 +230,11 @@ export default function Register() {
           {isDoctor && (
             <>
               <div className={styles.formGroup}>
-                <label>Specialty</label>
+                <label>speciality</label>
                 <input
                   type="text"
-                  name="specialty"
-                  value={formData.specialty}
+                  name="speciality"
+                  value={formData.speciality}
                   onChange={handleChange}
                   placeholder="Cardiologist, Dentist, etc."
                 />
@@ -245,13 +275,13 @@ export default function Register() {
               </div>
 
               <div className={styles.formGroup}>
-                <label>Clinic Location</label>
+                <label>Clinic Location "Google maps hyperlink"</label>
                 <input
-                  type="text"
+                  type="url"
                   name="location"
                   value={formData.location}
                   onChange={handleChange}
-                  placeholder="Nasr City, Cairo"
+                  placeholder="https://www.google.com/maps/search/?api=1&query=Cairo+Egypt"
                 />
               </div>
             </>

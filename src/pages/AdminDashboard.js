@@ -158,9 +158,9 @@ export default function AdminDashboard() {
         <div className={styles.actions}>
           <button
             className={styles.createDoctorBtn}
-            onClick={() => navigate("/create-doctor")}
+            onClick={() => navigate("/createprofile")}
           >
-            + Create Doctor Profile
+            + Button !
           </button>
           {/* Future buttons can be added here */}
         </div>
