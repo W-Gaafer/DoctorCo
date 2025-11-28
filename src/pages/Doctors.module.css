@@ -9,10 +9,13 @@
   color: #1e40af;
   margin-bottom: 2rem;
   font-size: 2rem;
+  font-weight: 700;
 }
 
+/* Filters container */
 .filters {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 1rem;
   margin-bottom: 2rem;
@@ -20,18 +23,33 @@
 
 .filters input,
 .filters select {
-  padding: 0.6rem 1rem;
+  width: 220px;           /* عرض ثابت للحفاظ على تناسق العناصر */
+  height: 42px;           /* ارتفاع موحد لكل الحقول */
+  padding: 0 0.9rem;
   border: 1px solid #93c5fd;
   border-radius: 10px;
-  font-size: 1rem;
+  font-size: 0.95rem;
+  outline: none;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
 }
 
+.filters input:focus,
+.filters select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 4px rgba(37, 99, 235, 0.35);
+  background-color: #f9fbff;
+}
+
+/* Grid for doctors */
 .doctorList {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1.5rem;
 }
 
+/* Doctor Card */
 .card {
   background-color: #ffffff;
   border: 1px solid #c7ddff;
@@ -76,9 +94,23 @@
   padding: 0.6rem 1rem;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.1s, box-shadow 0.1s;
 }
 
 .bookBtn:hover {
   background-color: #1e3a8a;
+}
+
+.bookBtn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+}
+
+/* Loading & Error messages */
+.loading,
+.errorMsg {
+  text-align: center;
+  margin: 2rem 0;
+  font-size: 1rem;
+  color: #b91c1c;
 }
