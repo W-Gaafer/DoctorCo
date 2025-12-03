@@ -1,71 +1,98 @@
+// DoctorProfile.js
 import styles from "./DoctorProfile.module.css";
 import { useParams } from "react-router-dom";
-
-// بيانات تجريبية للدكاترة
-const doctors = [
-  {
-    id: 1,
-    name: "Dr. Ahmed Hassan",
-    specialty: "Cardiologist",
-    city: "Cairo",
-    rating: 4,
-    bio: "Dr. Ahmed has over 15 years of experience in cardiology and has treated thousands of patients with heart-related issues.",
-    phone: "+20 100 123 4567",
-    email: "ahmed.hassan@example.com",
-    image: "/images/doctors/doctor1.jpg",
-  },
-  {
-    id: 2,
-    name: "Dr. Sara Ali",
-    specialty: "Dermatologist",
-    city: "Alexandria",
-    rating: 5,
-    bio: "Dr. Sara is a leading dermatologist specializing in skin treatments, acne, and cosmetic procedures.",
-    phone: "+20 102 234 5678",
-    email: "sara.ali@example.com",
-    image: "/images/doctors/doctor2.jpg",
-  },
-];
+import { useEffect, useState } from "react";
 
 export default function DoctorProfile() {
-  const { id } = useParams(); // افتراض إن المسار فيه :id
-  const doctor = doctors.find((doc) => doc.id === parseInt(id));
+  const { id } = useParams();
+  const [doctor, setDoctor] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!doctor) {
-    return <p>Doctor not found.</p>;
-  }
+  useEffect(() => {
+    const fetchDoctor = async () => {
+      try {
+        const response = await fetch(`https://localhost:54246/api/Users/${id}`);
+        if (!response.ok) throw new Error("Failed to load doctor profile");
+
+        const data = await response.json();
+        setDoctor(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDoctor();
+  }, [id]);
+
+  if (loading) return <p className={styles.loading}>Loading profile...</p>;
+  if (!doctor) return <p className={styles.error}>Doctor not found.</p>;
+
+  const renderStars = (rating) => {
+    const fullStars = Math.floor(rating);
+    const stars = [];
+
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <span
+          key={i}
+          className={i <= fullStars ? styles.starFull : styles.starEmpty}
+        >
+          ★
+        </span>
+      );
+    }
+    return stars;
+  };
 
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        <img src={doctor.image} alt={doctor.name} className={styles.image} />
-        <h1 className={styles.name}>{doctor.name}</h1>
-        <p className={styles.specialty}>{doctor.specialty}</p>
-        <p className={styles.city}>{doctor.city}</p>
+        <img
+          src={doctor.image || "/images/doctors/default.jpg"}
+          alt={doctor.fullName}
+          className={styles.image}
+        />
 
-        {/* Rating */}
-        <p className={styles.rating}>
-          {Array.from({ length: doctor.rating }).map((_, i) => (
-            <span key={i}>★</span>
-          ))}
-        </p>
+        <h1 className={styles.name}>{doctor.fullName}</h1>
+        <p className={styles.specialty}>{doctor.speciality}</p>
+
+        {/* Ranking */}
+        <div className={styles.ratingBox}>
+          {renderStars(doctor.ranking || 0)}
+          <span className={styles.ratingNumber}>({doctor.ranking || 0}/5)</span>
+        </div>
 
         {/* Bio */}
-        <p className={styles.bio}>{doctor.bio}</p>
+        <p className={styles.bio}>{doctor.bio || "No biography available."}</p>
 
-        {/* Contact */}
+        <p className={styles.city}>{doctor.city}</p>
+
+        {/* Location */}
+        <p className={styles.location}>
+          Location: <span>{doctor.location || "No location provided"}</span>
+        </p>
+
+        {/* Contact Section */}
         <div className={styles.contact}>
           <p>
-            <strong>Phone:</strong> {doctor.phone}
+            <strong>Phone:</strong> {doctor.phoneNumber || "N/A"}
           </p>
           <p>
-            <strong>Email:</strong> {doctor.email}
+            <strong>Email:</strong> {doctor.email || "N/A"}
           </p>
         </div>
 
-        {/* Book Appointment */}
+        {/* Pricing */}
+        <p className={styles.price}>
+          Consultation Price: <span>{doctor.reservationPrice || "N/A"} EGP</span>
+        </p>
+
         <button className={styles.bookBtn}>Book Appointment</button>
       </div>
     </div>
   );
 }
+
+

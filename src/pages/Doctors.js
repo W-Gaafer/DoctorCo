@@ -1,10 +1,16 @@
 import { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+
 import styles from "./Doctors.module.css";
+
+
 
 export default function Doctors() {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSpeciality, setSelectedSpeciality] = useState("All");
@@ -151,7 +157,13 @@ export default function Doctors() {
               <h3>{doc.fullName}</h3>
               <p className={styles.spec}>{doc.speciality}</p>
               <span className={styles.city}>{doc.city}</span>
-              <button className={styles.bookBtn}>View Profile</button>
+              <button
+                className={styles.bookBtn}
+                onClick={() => navigate(`/doctors/${doc.userId}`)}
+              >
+                View Profile
+              </button>
+
             </div>
           ))
         )}
