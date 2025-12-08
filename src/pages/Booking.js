@@ -1,46 +1,51 @@
 import { useState } from "react";
 import styles from "./Booking.module.css";
 
-// مثال بيانات مواعيد الدكتور
-const doctorSchedule = {
-  "2025-11-10": ["09:00", "10:00", "13:00"],
-  "2025-11-11": ["11:00", "14:00"],
-  "2025-11-12": [],
-};
-
-// قائمة الساعات الممكنة للحجز
-const allTimes = [
-  "09:00",
-  "10:00",
-  "11:00",
-  "12:00",
-  "13:00",
-  "14:00",
-  "15:00",
-  "16:00",
-];
-
 export default function Booking() {
-  const [formData, setFormData] = useState({
-    date: "",
-    time: "",
-    description: "",
-  });
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
+  const [description, setDescription] = useState("");
 
-  function handleChange(e) {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  // ثابت لحين ربط الـ API
+  const weekSchedule = {
+    "Monday": {
+      date: "2025-11-10",
+      all: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00"],
+      booked: ["10:00", "13:00"],
+    },
+    "Tuesday": {
+      date: "2025-11-11",
+      all: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00"],
+      booked: ["11:00"],
+    },
+    "Wednesday": {
+      date: "2025-11-12",
+      all: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00"],
+      booked: [],
+    },
+    "Thursday": {
+      date: "2025-11-13",
+      all: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00"],
+      booked: ["09:00", "14:00"],
+    },
+    "Friday": {
+      date: "2025-11-14",
+      all: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00"],
+      booked: [],
+    },
+  };
+
+  function handleSelect(day, time) {
+    setSelectedDate(weekSchedule[day].date);
+    setSelectedTime(time);
   }
-
-  // احصل على المواعيد المتاحة للتاريخ المحدد
-  const availableTimes = formData.date
-    ? allTimes.filter((t) => !doctorSchedule[formData.date]?.includes(t))
-    : [];
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log("Booking Data:", formData);
-    alert("Appointment booked successfully!");
-    setFormData({ date: "", time: "", description: "" });
+    alert(`Appointment booked for ${selectedDate} at ${selectedTime}`);
+    setSelectedTime(null);
+    setSelectedDate(null);
+    setDescription("");
   }
 
   return (
@@ -49,50 +54,55 @@ export default function Booking() {
         <h1 className={styles.title}>Book an Appointment</h1>
 
         <form onSubmit={handleSubmit} className={styles.form}>
-          {/* وصف الحالة المرضية */}
           <div className={styles.formGroup}>
             <label>Describe your condition</label>
             <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
               required
-              placeholder="Enter a brief description of your condition..."
-            ></textarea>
-          </div>
-
-          {/* اختيار اليوم */}
-          <div className={styles.formGroup}>
-            <label>Select Date</label>
-            <input
-              type="date"
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-              required
+              placeholder="Enter a brief description..."
             />
           </div>
 
-          {/* اختيار الساعة */}
-          <div className={styles.formGroup}>
-            <label>Select Time</label>
-            <select
-              name="time"
-              value={formData.time}
-              onChange={handleChange}
-              required
-              disabled={!formData.date}
-            >
-              <option value="">-- Select Time --</option>
-              {availableTimes.map((time) => (
-                <option key={time} value={time}>
-                  {time}
-                </option>
-              ))}
-            </select>
-          </div>
+{/* Weekly Calendar */}
+<div className={styles.weeklyWrapper}>
+  {Object.entries(weekSchedule).map(([day, data]) => (
+    <div key={day} className={styles.weekColumn}>
+      <div className={styles.dayTitle}>{day}</div>
 
-          <button type="submit" className={styles.bookBtn}>
+      <div className={styles.timeSlots}>
+        {data.all.map((time) => {
+          const isBooked = data.booked.includes(time);
+          const isSelected =
+            selectedTime === time && selectedDate === data.date;
+
+          return (
+            <div
+              key={time}
+              className={
+                isBooked
+                  ? styles.slotDisabled
+                  : isSelected
+                  ? styles.slotSelected
+                  : styles.slot
+              }
+              onClick={() => !isBooked && handleSelect(day, time)}
+            >
+              {time}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  ))}
+</div>
+
+
+          <button
+            type="submit"
+            className={styles.bookBtn}
+            disabled={!selectedTime || !selectedDate}
+          >
             Book Appointment
           </button>
         </form>

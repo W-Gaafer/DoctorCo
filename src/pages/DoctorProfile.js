@@ -2,11 +2,15 @@
 import styles from "./DoctorProfile.module.css";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 export default function DoctorProfile() {
   const { id } = useParams();
   const [doctor, setDoctor] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchDoctor = async () => {
@@ -89,7 +93,14 @@ export default function DoctorProfile() {
           Consultation Price: <span>{doctor.reservationPrice || "N/A"} EGP</span>
         </p>
 
-        <button className={styles.bookBtn}>Book Appointment</button>
+        <button
+          className={styles.bookBtn}
+          onClick={() => navigate(`/doctors/${doctor.userId}/booking`)}
+        >
+          Book Appointment
+        </button>
+
+
       </div>
     </div>
   );
