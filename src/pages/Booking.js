@@ -1,42 +1,56 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./Booking.module.css";
+import { useParams } from "react-router-dom";
 
 export default function Booking() {
+  const { id } = useParams();
+  const [weekSchedule, setWeekSchedule] = useState({});
+  const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [description, setDescription] = useState("");
 
-  // ثابت لحين ربط الـ API
-  const weekSchedule = {
-    "Monday": {
-      date: "2025-11-10",
-      all: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00"],
-      booked: ["10:00", "13:00"],
-    },
-    "Tuesday": {
-      date: "2025-11-11",
-      all: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00"],
-      booked: ["11:00"],
-    },
-    "Wednesday": {
-      date: "2025-11-12",
-      all: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00"],
-      booked: [],
-    },
-    "Thursday": {
-      date: "2025-11-13",
-      all: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00"],
-      booked: ["09:00", "14:00"],
-    },
-    "Friday": {
-      date: "2025-11-14",
-      all: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00"],
-      booked: [],
-    },
+  // تحويل رقم اليوم (1=Saturday,..5=Thursday) إلى اسم اليوم
+  const dayNames = {
+    1: "Saturday",
+    2: "Sunday",
+    3: "Monday",
+    4: "Tuesday",
+    5: "Wednesday",
+    6: "Thursday",
   };
 
+  useEffect(() => {
+    async function fetchSchedule() {
+      try {
+        const res = await fetch(
+          `https://localhost:54246/api/Schedule/user/${id}`
+        );
+        const data = await res.json();
+
+        // نجمّع المواعيد حسب اليوم
+        const grouped = {};
+        data.forEach((item) => {
+          const dayName = dayNames[item.day_Of_Week];
+          if (!grouped[dayName])
+            grouped[dayName] = { date: dayName, all: [], booked: [] };
+          grouped[dayName].all.push(item.start_Time);
+          if (!item.isAvailable) grouped[dayName].booked.push(item.start_Time);
+        });
+
+        setWeekSchedule(grouped);
+      } catch (err) {
+        console.error("Failed to load schedule:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchSchedule();
+  }, [id]);
+
   function handleSelect(day, time) {
-    setSelectedDate(weekSchedule[day].date);
+    setSelectedDate(day);
     setSelectedTime(time);
   }
 
@@ -47,6 +61,10 @@ export default function Booking() {
     setSelectedDate(null);
     setDescription("");
   }
+
+  if (loading) return <h3 className={styles.loading}>Loading...</h3>;
+  if (!Object.keys(weekSchedule).length)
+    return <h3 className={styles.error}>No schedule found.</h3>;
 
   return (
     <div className={styles.container}>
@@ -64,39 +82,38 @@ export default function Booking() {
             />
           </div>
 
-{/* Weekly Calendar */}
-<div className={styles.weeklyWrapper}>
-  {Object.entries(weekSchedule).map(([day, data]) => (
-    <div key={day} className={styles.weekColumn}>
-      <div className={styles.dayTitle}>{day}</div>
+          {/* Weekly Calendar */}
+          <div className={styles.weeklyWrapper}>
+            {Object.entries(weekSchedule).map(([day, data]) => (
+              <div key={day} className={styles.weekColumn}>
+                <div className={styles.dayTitle}>{day}</div>
 
-      <div className={styles.timeSlots}>
-        {data.all.map((time) => {
-          const isBooked = data.booked.includes(time);
-          const isSelected =
-            selectedTime === time && selectedDate === data.date;
+                <div className={styles.timeSlots}>
+                  {data.all.map((time) => {
+                    const isBooked = data.booked.includes(time);
+                    const isSelected =
+                      selectedTime === time && selectedDate === day;
 
-          return (
-            <div
-              key={time}
-              className={
-                isBooked
-                  ? styles.slotDisabled
-                  : isSelected
-                  ? styles.slotSelected
-                  : styles.slot
-              }
-              onClick={() => !isBooked && handleSelect(day, time)}
-            >
-              {time}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  ))}
-</div>
-
+                    return (
+                      <div
+                        key={time}
+                        className={
+                          isBooked
+                            ? styles.slotDisabled
+                            : isSelected
+                            ? styles.slotSelected
+                            : styles.slot
+                        }
+                        onClick={() => !isBooked && handleSelect(day, time)}
+                      >
+                        {time}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
 
           <button
             type="submit"
