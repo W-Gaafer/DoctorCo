@@ -8,6 +8,8 @@
   color: #1e40af;
   text-align: center;
   margin-bottom: 2rem;
+  font-size: 2rem;
+  font-weight: bold;
 }
 
 .sectionTitle {
@@ -15,6 +17,8 @@
   margin-bottom: 1rem;
   border-bottom: 2px solid #93c5fd;
   padding-bottom: 0.5rem;
+  font-size: 1.3rem;
+  font-weight: 600;
 }
 
 .list {
@@ -27,8 +31,18 @@
   background-color: #eff6ff;
   border: 1px solid #bfdbfe;
   border-radius: 12px;
-  padding: 1rem 1.5rem;
+  padding: 0.5rem 1.5rem;
   box-shadow: 0 2px 6px rgba(0, 0, 80, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.cardTitle {
+  margin-bottom: 5px;
+}
+
+.cardElement {
+  margin-bottom: 0px;
 }
 
 .completed {
@@ -39,6 +53,9 @@
   margin-top: 1rem;
   border-top: 1px solid #bfdbfe;
   padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .stars {
@@ -82,18 +99,29 @@
 }
 
 .rateBtn,
-.doneBtn {
+.doneBtn,
+.cancelBtn {
   background-color: #1d4ed8;
   color: white;
   border: none;
   border-radius: 8px;
   padding: 0.5rem 1rem;
-  margin-top: 0.5rem;
+  margin: 1rem 0rem;
   cursor: pointer;
   transition: background 0.3s;
 }
 
 .rateBtn:hover,
-.doneBtn:hover {
+.doneBtn:hover,
+.cancelBtn:hover {
   background-color: #1e3a8a;
+}
+
+.cancelBtn {
+  align-self: flex-start; /* زرار الإلغاء يثبت على يسار البطاقة */
+  background-color: #ef4444; /* أحمر */
+}
+
+.cancelBtn:hover {
+  background-color: #b91c1c;
 }
