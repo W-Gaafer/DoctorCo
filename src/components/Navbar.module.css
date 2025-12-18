@@ -55,3 +55,62 @@
 .loginButton:hover {
   background-color: #60a5fa; /* أزرق أفتح عند hover */
 }
+
+.notifContainer {
+  position: relative;
+  display: inline-block;
+  margin-left: 1rem;
+}
+
+.bell {
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: white;
+  background: transparent;
+  border: none;
+}
+
+.badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #ef4444; /* red */
+  color: white;
+  border-radius: 999px;
+  padding: 2px 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.notifDropdown {
+  position: absolute;
+  right: 0;
+  top: 28px;
+  background: white;
+  color: black;
+  min-width: 260px;
+  max-height: 320px;
+  overflow: auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  border-radius: 6px;
+  z-index: 1000;
+}
+
+.notifItem {
+  padding: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.notifItemUnread {
+  background: #eef2ff;
+}
+
+.notifTitle {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.notifTime {
+  font-size: 0.75rem;
+  color: #666;
+}

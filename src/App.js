@@ -14,12 +14,14 @@ import AdminDashboard from "./pages/AdminDashboard";
 import CreateProfile from "./pages/CreateProfile";
 import DoctorDashboard from "./pages/DoctorDashboard";
 import { AuthProvider } from "./contexts/AuthContext";
+import { NotificationsProvider } from "./contexts/NotificationsContext";
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
+        <NotificationsProvider>
+          <Routes>
           <Route path="/" element={<AppLayout />}>
             <Route index element={<Home />} />
             <Route path="login" element={<Login />} />
@@ -35,7 +37,8 @@ function App() {
             <Route path="/doctordashboard" element={<DoctorDashboard />} />
             <Route path="*" element={<NotFound />} />
           </Route>
-        </Routes>
+          </Routes>
+        </NotificationsProvider>
       </AuthProvider>
     </BrowserRouter>
   );

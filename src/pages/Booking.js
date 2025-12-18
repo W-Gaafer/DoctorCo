@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import styles from "./Booking.module.css";
+import { useNotifications } from "../contexts/NotificationsContext";
 
 export default function Booking() {
   const { id } = useParams();
@@ -15,6 +16,7 @@ export default function Booking() {
   const [availableTimes, setAvailableTimes] = useState([]);
   const [selectedTime, setSelectedTime] = useState(null);
   const [description, setDescription] = useState("");
+  const { createNotification } = useNotifications();
 
   /* ================================
      جلب مواعيد العمل (Schedules)
@@ -128,6 +130,63 @@ export default function Booking() {
 
       // تحديث المواعيد المحجوزة فورياً بعد الحجز
       setAppointments([...appointments, bookingData]);
+
+      // Create in-app notifications for patient and doctor (stored in localStorage)
+      try {
+        // patient notification
+        createNotification({
+          recipientId: patient.userId,
+          title: "Appointment Confirmed",
+          message: `Appointment confirmed on ${bookingData.appointment_Date} at ${bookingData.appointment_Time}`,
+          data: bookingData,
+        });
+
+        // doctor notification
+        createNotification({
+          recipientId: id,
+          title: "New Booking",
+          message: `New appointment with ${patient.fullName} on ${bookingData.appointment_Date} at ${bookingData.appointment_Time}`,
+          data: bookingData,
+        });
+
+        // schedule reminder 1 day before (in-app)
+        const apptIso = `${bookingData.appointment_Date}T${bookingData.appointment_Time}:00`;
+        const apptDate = new Date(apptIso);
+        const remindAt = apptDate.getTime() - 24 * 60 * 60 * 1000;
+        const now = Date.now();
+        const reminderForPatient = () =>
+          createNotification({
+            recipientId: patient.userId,
+            title: "Appointment Reminder",
+            message: `You have an appointment on ${bookingData.appointment_Date} at ${bookingData.appointment_Time}`,
+            data: bookingData,
+          });
+        const reminderForDoctor = () =>
+          createNotification({
+            recipientId: id,
+            title: "Upcoming Appointment",
+            message: `You have an appointment with ${patient.fullName} on ${bookingData.appointment_Date} at ${bookingData.appointment_Time}`,
+            data: bookingData,
+          });
+
+        if (remindAt <= now) {
+          // If less than a day away, create immediately
+          reminderForPatient();
+          reminderForDoctor();
+        } else {
+          // schedule reminder (works while tab is open)
+          setTimeout(() => {
+            try {
+              reminderForPatient();
+              reminderForDoctor();
+            } catch (e) {
+              // ignore
+            }
+          }, remindAt - now);
+        }
+      } catch (err) {
+        console.error("Failed to create in-app notifications:", err);
+      }
     } catch (err) {
       console.error(err);
       alert("Error booking appointment");
