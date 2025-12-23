@@ -44,10 +44,22 @@ export function NotificationsProvider({ children }) {
     };
   }, []);
 
-  // Filter notifications for current user (loose equality)
-  const notifications = user
-    ? allNotifications.filter((n) => String(n.recipientId) === String(user.userId))
-    : [];
+  // Filter notifications for current user (loose equality).
+  // Try several possible identifier fields to avoid mismatches (userId, id, email, phoneNumber).
+  const notifications = (() => {
+    if (!user) return [];
+    const ids = [user.userId, user.id, user.email, user.phoneNumber]
+      .filter((x) => x !== undefined && x !== null)
+      .map((x) => String(x));
+
+    const matched = allNotifications.filter((n) => ids.includes(String(n.recipientId)));
+    // Debug: log if there are notifications but none matched (helps find mismatches)
+    if (allNotifications.length > 0 && matched.length === 0) {
+      // eslint-disable-next-line no-console
+      console.warn("Notifications present but none matched current user. user ids:", ids, "notifications:", allNotifications);
+    }
+    return matched;
+  })();
 
   function persist(list) {
     try {
@@ -64,22 +76,30 @@ export function NotificationsProvider({ children }) {
       createdAt: new Date().toISOString(),
       ...notification,
     };
-    const updated = [...allNotifications, n];
-    setAllNotifications(updated);
-    persist(updated);
-    return n;
+    let created = null;
+    setAllNotifications((prev) => {
+      const updated = [...prev, n];
+      persist(updated);
+      created = n;
+      return updated;
+    });
+    return created;
   }
 
   function markAsRead(id) {
-    const updated = allNotifications.map((x) => (x.id === id ? { ...x, read: true } : x));
-    setAllNotifications(updated);
-    persist(updated);
+    setAllNotifications((prev) => {
+      const updated = prev.map((x) => (x.id === id ? { ...x, read: true } : x));
+      persist(updated);
+      return updated;
+    });
   }
 
   function markAllRead() {
-    const updated = allNotifications.map((x) => ({ ...x, read: true }));
-    setAllNotifications(updated);
-    persist(updated);
+    setAllNotifications((prev) => {
+      const updated = prev.map((x) => ({ ...x, read: true }));
+      persist(updated);
+      return updated;
+    });
   }
 
   return (
