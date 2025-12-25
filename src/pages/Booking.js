@@ -150,9 +150,11 @@ export default function Booking() {
         });
 
         // schedule reminder 1 day before (in-app)
-        const apptIso = `${bookingData.appointment_Date}T${bookingData.appointment_Time}:00`;
+        const apptIso = `${bookingData.appointment_Date}T${bookingData.appointment_Time}`;
         const apptDate = new Date(apptIso);
+        console.log(apptDate); // هيظهر التاريخ الصحيح
         const remindAt = apptDate.getTime() - 24 * 60 * 60 * 1000;
+        console.log(remindAt, Date.now()); // يوضح الفرق بدقة
         const now = Date.now();
         const reminderForPatient = () =>
           createNotification({

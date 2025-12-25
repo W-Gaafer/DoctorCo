@@ -4,13 +4,11 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-
 export default function DoctorProfile() {
   const { id } = useParams();
   const [doctor, setDoctor] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const fetchDoctor = async () => {
@@ -75,7 +73,19 @@ export default function DoctorProfile() {
 
         {/* Location */}
         <p className={styles.location}>
-          Location: <span>{doctor.location || "No location provided"}</span>
+          Location:{" "}
+          {doctor.location ? (
+            <a
+              href={`${doctor.location}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.locationLink}
+            >
+              {doctor.location}
+            </a>
+          ) : (
+            "No location provided"
+          )}
         </p>
 
         {/* Contact Section */}
@@ -90,7 +100,8 @@ export default function DoctorProfile() {
 
         {/* Pricing */}
         <p className={styles.price}>
-          Consultation Price: <span>{doctor.reservationPrice || "N/A"} EGP</span>
+          Consultation Price:{" "}
+          <span>{doctor.reservationPrice || "N/A"} EGP</span>
         </p>
 
         <button
@@ -99,11 +110,7 @@ export default function DoctorProfile() {
         >
           Book Appointment
         </button>
-
-
       </div>
     </div>
   );
 }
-
-

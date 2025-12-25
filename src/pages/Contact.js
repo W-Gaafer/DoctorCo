@@ -15,8 +15,6 @@ export default function Contact() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log(formData);
-    // هنا ممكن تضيف لوجيك الإرسال الحقيقي (API أو Email service)
     alert("Message sent successfully!");
     setFormData({ name: "", email: "", message: "" });
   }
@@ -36,7 +34,7 @@ export default function Contact() {
             <strong>Phone:</strong> +20 100 123 4567
           </p>
           <p>
-            <strong>Email:</strong> clinicbooking@example.com
+            <strong>Email:</strong> doctorco-cs@gmail.com
           </p>
           <p>
             <strong>Address:</strong> 15 El-Tahrir St, Cairo, Egypt

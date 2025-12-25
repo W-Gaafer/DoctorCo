@@ -1,3 +1,5 @@
+//////////////////////////////////////////////////////////////////////////////////
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./AdminDashboard.module.css";
@@ -6,10 +8,10 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
 
   const [stats, setStats] = useState({
-    clinics: 5,
-    doctors: 12,
-    patients: 87,
-    bookings: 143,
+    clinics: 0,
+    doctors: 0,
+    patients: 0,
+    appointments: 0,
   });
 
   const [recentBookings, setRecentBookings] = useState([]);
@@ -19,7 +21,84 @@ export default function AdminDashboard() {
   const [newTime, setNewTime] = useState("");
 
   useEffect(() => {
-    // Mock data for recent bookings
+    async function loadSpecialitiesCount() {
+      try {
+        const response = await fetch(
+          "https://localhost:54246/api/Users/doctors"
+        );
+        const doctors = await response.json();
+
+        if (!Array.isArray(doctors)) {
+          console.error("Doctors API did not return an array");
+          return;
+        }
+
+        const specialitiesSet = new Set();
+
+        doctors.forEach((doc) => {
+          if (doc.speciality) {
+            specialitiesSet.add(doc.speciality);
+          }
+        });
+
+        setStats((prev) => ({
+          ...prev,
+          doctors: doctors.length,
+          clinics: specialitiesSet.size,
+        }));
+      } catch (error) {
+        console.error("Error loading doctors specialities", error);
+      }
+    }
+    loadSpecialitiesCount();
+    ///////////////////////////////////////////////////////////////////////
+    async function loadPatientsCount() {
+      try {
+        const response = await fetch("https://localhost:54246/api/Users");
+        const users = await response.json();
+
+        if (!Array.isArray(users)) {
+          console.error("Users API did not return an array");
+          return;
+        }
+
+        const patientsCount = users.filter(
+          (user) => user.role === "patient"
+        ).length;
+
+        setStats((prev) => ({
+          ...prev,
+          patients: patientsCount,
+        }));
+      } catch (error) {
+        console.error("Error loading doctors specialities", error);
+      }
+    }
+    loadPatientsCount();
+    /////////////////////////////////////////////////////////////////////
+    async function loadAppointmentsCount() {
+      try {
+        const response = await fetch("https://localhost:54246/api/Appointment");
+        const appointments = await response.json();
+
+        if (!Array.isArray(appointments)) {
+          console.error("Users API did not return an array");
+          return;
+        }
+
+        setStats((prev) => ({
+          ...prev,
+          appointments: appointments.length,
+        }));
+      } catch (error) {
+        console.error("Error loading appointments", error);
+      }
+    }
+    loadAppointmentsCount();
+
+    /* ===============================
+       Mock data (unchanged)
+       =============================== */
     const mockBookings = [
       {
         id: 1,
@@ -48,7 +127,6 @@ export default function AdminDashboard() {
     ];
     setRecentBookings(mockBookings);
 
-    // Mock data for top doctors
     const mockTopDoctors = [
       {
         id: 1,
@@ -131,6 +209,7 @@ export default function AdminDashboard() {
   function handleEdit(id) {
     const booking = recentBookings.find((b) => b.id === id);
     if (!booking) return;
+
     const [datePart, timePart] = booking.date.split("T");
     setNewDate(datePart);
     setNewTime(timePart.slice(0, 5));
@@ -139,6 +218,7 @@ export default function AdminDashboard() {
 
   function handleSave() {
     if (!editingBooking) return;
+
     const updatedDateTime = `${newDate}T${newTime}`;
     setRecentBookings((prev) =>
       prev.map((b) =>
@@ -152,7 +232,6 @@ export default function AdminDashboard() {
     <div className={styles.dashboard}>
       <h1 className={styles.title}>Admin Dashboard</h1>
 
-      {/* Control Actions Section */}
       <div className={styles.controlActions}>
         <h2 className={styles.sectionTitle}>Control Actions</h2>
         <div className={styles.actions}>
@@ -162,11 +241,9 @@ export default function AdminDashboard() {
           >
             + Button !
           </button>
-          {/* Future buttons can be added here */}
         </div>
       </div>
 
-      {/* Statistics Section */}
       <div className={styles.statistics}>
         <h2 className={styles.sectionTitle}>Statistics</h2>
         <div className={styles.cards}>
@@ -184,12 +261,12 @@ export default function AdminDashboard() {
           </div>
           <div className={styles.card}>
             <h3>Total Bookings</h3>
-            <p>{stats.bookings}</p>
+            <p>{stats.appointments}</p>
           </div>
         </div>
       </div>
 
-      {/* Recent Bookings */}
+      {/* باقي الصفحة زي ما هي بدون أي تغيير */}
       <div className={styles.recentSection}>
         <h2 className={styles.sectionTitle}>Recent Bookings (Last 24 Hours)</h2>
         {recentBookings.length === 0 ? (
@@ -248,9 +325,7 @@ export default function AdminDashboard() {
 
       {/* Top 10 Doctors */}
       <div className={styles.topDoctors}>
-        <h2 className={styles.sectionTitle}>
-          Top 10 Most Booked Doctors (Last 30 Days)
-        </h2>
+        <h2 className={styles.sectionTitle}>Top 10 Doctors (Last 3 Months)</h2>
         {topDoctors.length === 0 ? (
           <p className={styles.empty}>No data available.</p>
         ) : (

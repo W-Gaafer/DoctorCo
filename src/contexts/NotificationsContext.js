@@ -10,8 +10,10 @@ export function NotificationsProvider({ children }) {
   // Load from localStorage initially
   useEffect(() => {
     try {
-      const raw = localStorage.getItem("notifications");
-      setAllNotifications(raw ? JSON.parse(raw) : []);
+      const storedNotifications = localStorage.getItem("notifications");
+      setAllNotifications(
+        storedNotifications ? JSON.parse(storedNotifications) : []
+      );
     } catch (e) {
       setAllNotifications([]);
     }
@@ -31,8 +33,10 @@ export function NotificationsProvider({ children }) {
     window.addEventListener("storage", handler);
     const interval = setInterval(() => {
       try {
-        const raw = localStorage.getItem("notifications");
-        setAllNotifications(raw ? JSON.parse(raw) : []);
+        const storedNotifications = localStorage.getItem("notifications");
+        setAllNotifications(
+          storedNotifications ? JSON.parse(storedNotifications) : []
+        );
       } catch (e) {
         // ignore
       }
@@ -44,20 +48,28 @@ export function NotificationsProvider({ children }) {
     };
   }, []);
 
-  // Filter notifications for current user (loose equality).
-  // Try several possible identifier fields to avoid mismatches (userId, id, email, phoneNumber).
+  // Filter notifications for current user and sort by newest first
   const notifications = (() => {
     if (!user) return [];
     const ids = [user.userId, user.id, user.email, user.phoneNumber]
       .filter((x) => x !== undefined && x !== null)
       .map((x) => String(x));
 
-    const matched = allNotifications.filter((n) => ids.includes(String(n.recipientId)));
-    // Debug: log if there are notifications but none matched (helps find mismatches)
+    const matched = allNotifications
+      .filter((n) => ids.includes(String(n.recipientId)))
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // الأحدث فوق
+
+    // Debug
     if (allNotifications.length > 0 && matched.length === 0) {
       // eslint-disable-next-line no-console
-      console.warn("Notifications present but none matched current user. user ids:", ids, "notifications:", allNotifications);
+      console.warn(
+        "Notifications present but none matched current user. user ids:",
+        ids,
+        "notifications:",
+        allNotifications
+      );
     }
+
     return matched;
   })();
 
@@ -78,7 +90,8 @@ export function NotificationsProvider({ children }) {
     };
     let created = null;
     setAllNotifications((prev) => {
-      const updated = [...prev, n];
+      // ضيف الإشعار الجديد في البداية ليظهر فوق
+      const updated = [n, ...prev];
       persist(updated);
       created = n;
       return updated;
@@ -104,7 +117,13 @@ export function NotificationsProvider({ children }) {
 
   return (
     <NotificationsContext.Provider
-      value={{ notifications, createNotification, markAsRead, markAllRead, allNotifications }}
+      value={{
+        notifications,
+        createNotification,
+        markAsRead,
+        markAllRead,
+        allNotifications,
+      }}
     >
       {children}
     </NotificationsContext.Provider>
