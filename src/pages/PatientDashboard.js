@@ -62,7 +62,7 @@ export default function PatientDashboard() {
       ...prev,
       [id]: { ...prev[id], isEditing: false },
     }));
-    // هنا ممكن تضيف API لتحديث الـ review على السيرفر لو حابب
+    // هنا ممكن نضيف API لتحديث الـ review على السيرفر  مستقبلا
   };
 
   const handleCancel = async (id) => {

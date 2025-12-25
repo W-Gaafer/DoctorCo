@@ -241,7 +241,7 @@ export default function Register() {
                   value="female"
                   checked={formData.gender === "female"}
                   onChange={handleChange}
-                />{" "}
+                />
                 Female
               </label>
             </div>
@@ -257,7 +257,7 @@ export default function Register() {
                   value="patient"
                   checked={formData.role === "patient"}
                   onChange={handleChange}
-                />{" "}
+                />
                 Patient
               </label>
               <label>
@@ -267,7 +267,7 @@ export default function Register() {
                   value="doctor"
                   checked={formData.role === "doctor"}
                   onChange={handleChange}
-                />{" "}
+                />
                 Doctor
               </label>
             </div>

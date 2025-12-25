@@ -43,9 +43,13 @@ export default function DoctorDashboard() {
         // 0) Ask the server which methods are allowed (may return Allow header)
         let allowMethods = null;
         try {
-          const opt = await fetch(resourceUrl, { method: "OPTIONS", headers: { ...authHeader } });
+          const opt = await fetch(resourceUrl, {
+            method: "OPTIONS",
+            headers: { ...authHeader },
+          });
           if (opt && opt.headers) {
-            allowMethods = opt.headers.get("allow") || opt.headers.get("Allow") || null;
+            allowMethods =
+              opt.headers.get("allow") || opt.headers.get("Allow") || null;
           }
         } catch (e) {
           // ignore OPTIONS failure — we'll still try best-effort methods
@@ -53,29 +57,42 @@ export default function DoctorDashboard() {
         }
 
         const allowed = allowMethods ? allowMethods.toLowerCase() : "";
-            // The controller accepts specific status values (see backend). Use "completed" here.
-            if (allowed.includes("patch") || allowed === "") {
-              const desired = "completed";
-              const resPatch = await fetch(statusUrl, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json", ...authHeader },
-                body: JSON.stringify(desired),
-              });
+        // The controller accepts specific status values (see backend). Use "completed" here.
+        if (allowed.includes("patch") || allowed === "") {
+          const desired = "completed";
+          const resPatch = await fetch(statusUrl, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json", ...authHeader },
+            body: JSON.stringify(desired),
+          });
 
-              if (resPatch.ok) {
-                setAppointments((prev) => prev.map((a) => (a.id === selectedAppointment.id ? { ...a, status: desired } : a)));
-                closeModal();
-                return;
-              }
+          if (resPatch.ok) {
+            setAppointments((prev) =>
+              prev.map((a) =>
+                a.id === selectedAppointment.id ? { ...a, status: desired } : a
+              )
+            );
+            closeModal();
+            return;
+          }
 
-              const body = await readErr(resPatch);
-              throw new Error(`Failed to PATCH ${statusUrl} (${resPatch.status}) ${body}`);
-            }
+          const body = await readErr(resPatch);
+          throw new Error(
+            `Failed to PATCH ${statusUrl} (${resPatch.status}) ${body}`
+          );
+        }
 
-            throw new Error(allowMethods ? `Server does not allow PATCH. Allow: ${allowMethods}` : "Failed to update appointment (no allowed methods)");
+        throw new Error(
+          allowMethods
+            ? `Server does not allow PATCH. Allow: ${allowMethods}`
+            : "Failed to update appointment (no allowed methods)"
+        );
       } catch (err) {
         console.error(err);
-        alert("Could not mark appointment complete — " + (err.message || "unknown error"));
+        alert(
+          "Could not mark appointment complete — " +
+            (err.message || "unknown error")
+        );
       }
     }
 
@@ -95,15 +112,13 @@ export default function DoctorDashboard() {
 
   const days = [...new Set(appointments.map((a) => getDayName(a)))];
 
-  // 🧠 دالة لتنسيق التاريخ بشكل أنيق
   function formatDate(dateStr) {
     const date = new Date(dateStr);
     if (Number.isNaN(date.getTime())) return dateStr || "-";
     const options = { day: "numeric", month: "short", year: "numeric" };
-    return date.toLocaleDateString("en-GB", options); // مثل: 9 Nov 2025
+    return date.toLocaleDateString("en-GB", options);
   }
 
-  // جلب المواعيد عند تحميل الصفحة (مع Authorization لو متوفر)
   useEffect(() => {
     async function fetchAppointments() {
       try {
@@ -124,7 +139,8 @@ export default function DoctorDashboard() {
           `https://localhost:54246/api/Appointment/user/${user.userId}`,
           { headers }
         );
-        if (!res.ok) throw new Error(`Failed to load appointments (${res.status})`);
+        if (!res.ok)
+          throw new Error(`Failed to load appointments (${res.status})`);
         const data = await res.json();
         setAppointments(data || []);
       } catch (err) {
@@ -158,10 +174,15 @@ export default function DoctorDashboard() {
                   {appointments
                     .filter((a) => getDayName(a) === day)
                     .map((a) => {
-                      const dateStr = a.appointment_Date || a.date || a.appointmentDate;
+                      const dateStr =
+                        a.appointment_Date || a.date || a.appointmentDate;
                       const time = a.appointment_Time || a.time || "-";
                       const patientName =
-                        a.patient?.fullName || a.patientFullName || a.patient || a.patientName || "Unknown";
+                        a.patient?.fullName ||
+                        a.patientFullName ||
+                        a.patient ||
+                        a.patientName ||
+                        "Unknown";
 
                       return (
                         <div
@@ -171,16 +192,25 @@ export default function DoctorDashboard() {
                               ? styles.booked
                               : styles.available
                           }`}
-                          onClick={() => (a.status === "inProgress" || a.status === "booked") && openModal(a)}
+                          onClick={() =>
+                            (a.status === "inProgress" ||
+                              a.status === "booked") &&
+                            openModal(a)
+                          }
                         >
                           <span className={styles.date}>
                             🗓️ {formatDate(dateStr)} — <strong>{time}</strong>
                           </span>
 
-                          {a.status === "inProgress" || a.status === "booked" ? (
-                            <span className={styles.patient}>👤 {patientName}</span>
+                          {a.status === "inProgress" ||
+                          a.status === "booked" ? (
+                            <span className={styles.patient}>
+                              👤 {patientName}
+                            </span>
                           ) : (
-                            <span className={styles.free}>Completed Appointment</span>
+                            <span className={styles.free}>
+                              Completed Appointment
+                            </span>
                           )}
                         </div>
                       );
@@ -196,17 +226,23 @@ export default function DoctorDashboard() {
         <div className={styles.modalBackdrop} onClick={closeModal}>
           <div
             className={styles.modalContent}
-            onClick={(e) => e.stopPropagation()} // عشان ما يقفلش عند الضغط داخل المودال
+            onClick={(e) => e.stopPropagation()}
           >
             <h2 className={styles.modalTitle}>Patient Details</h2>
             {(() => {
               const a = selectedAppointment;
               const patientName =
-                a.patient?.fullName || a.patientFullName || a.patient || a.patientName || "Unknown";
+                a.patient?.fullName ||
+                a.patientFullName ||
+                a.patient ||
+                a.patientName ||
+                "Unknown";
               const age = a.patient?.age || a.age || a.patientAge || "-";
-              const address = a.patient?.address || a.address || a.patientAddress || "-";
+              const address =
+                a.patient?.address || a.address || a.patientAddress || "-";
               const desc = a.description || a.note || "-";
-              const dateStr = a.appointment_Date || a.date || a.appointmentDate || "-";
+              const dateStr =
+                a.appointment_Date || a.date || a.appointmentDate || "-";
               const time = a.appointment_Time || a.time || "-";
 
               return (
@@ -215,7 +251,8 @@ export default function DoctorDashboard() {
                     <strong>Name:</strong> {patientName}
                   </p>
                   <p>
-                    <strong>Date:</strong> {formatDate(dateStr)} | <strong>Time:</strong> {time}
+                    <strong>Date:</strong> {formatDate(dateStr)} |{" "}
+                    <strong>Time:</strong> {time}
                   </p>
                   <p>
                     <strong>Age:</strong> {age}

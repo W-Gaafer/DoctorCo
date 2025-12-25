@@ -266,7 +266,6 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* باقي الصفحة زي ما هي بدون أي تغيير */}
       <div className={styles.recentSection}>
         <h2 className={styles.sectionTitle}>Recent Bookings (Last 24 Hours)</h2>
         {recentBookings.length === 0 ? (

@@ -3,19 +3,16 @@ import { useNavigate } from "react-router-dom";
 
 import styles from "./Doctors.module.css";
 
-
-
 export default function Doctors() {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSpeciality, setSelectedSpeciality] = useState("All");
   const [selectedCity, setSelectedCity] = useState("All");
-  const [selectedRank, setSelectedRank] = useState("All"); // placeholder للـ future
+  const [selectedRank, setSelectedRank] = useState("All");
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -40,7 +37,6 @@ export default function Doctors() {
     fetchDoctors();
   }, []);
 
-  // استخراج تخصصات ومدن فريدة من البيانات
   const uniqueSpecialities = useMemo(() => {
     const specs = doctors
       .map((d) => d.speciality)
@@ -55,7 +51,6 @@ export default function Doctors() {
     return Array.from(new Set(cities)).sort();
   }, [doctors]);
 
-  // فلترة الدكاترة حسب الفلاتر والسيرش
   const filteredDoctors = useMemo(() => {
     return doctors.filter((doc) => {
       const docName = (doc.fullName || "").toLowerCase();
@@ -63,24 +58,15 @@ export default function Doctors() {
       const docCity = (doc.city || "").toLowerCase();
       const term = searchTerm.toLowerCase();
 
-      // فلتر السيرش (بالاسم أو التخصص)
       const matchesSearch =
-        term === "" ||
-        docName.includes(term) ||
-        docSpec.includes(term);
+        term === "" || docName.includes(term) || docSpec.includes(term);
 
-      // فلتر التخصص
       const matchesSpeciality =
-        selectedSpeciality === "All" ||
-        doc.speciality === selectedSpeciality;
+        selectedSpeciality === "All" || doc.speciality === selectedSpeciality;
 
-      // فلتر المدينة
-      const matchesCity =
-        selectedCity === "All" ||
-        doc.city === selectedCity;
+      const matchesCity = selectedCity === "All" || doc.city === selectedCity;
 
-      // فلتر الرانك (لسه placeholder، لحد ما يبقى عندنا rating في الـ backend)
-      const matchesRank = selectedRank === "All"; // دايمًا true حاليًا
+      const matchesRank = selectedRank === "All";
 
       return matchesSearch && matchesSpeciality && matchesCity && matchesRank;
     });
@@ -163,7 +149,6 @@ export default function Doctors() {
               >
                 View Profile
               </button>
-
             </div>
           ))
         )}

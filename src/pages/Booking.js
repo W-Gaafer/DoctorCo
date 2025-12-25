@@ -18,9 +18,6 @@ export default function Booking() {
   const [description, setDescription] = useState("");
   const { createNotification } = useNotifications();
 
-  /* ================================
-     جلب مواعيد العمل (Schedules)
-  ================================= */
   useEffect(() => {
     async function fetchSchedule() {
       try {
@@ -36,9 +33,6 @@ export default function Booking() {
     fetchSchedule();
   }, [id]);
 
-  /* ================================
-     جلب المواعيد المحجوزة (Appointments)
-  ================================= */
   useEffect(() => {
     async function fetchAppointments() {
       try {
@@ -56,9 +50,6 @@ export default function Booking() {
     fetchAppointments();
   }, [id]);
 
-  /* ================================
-     حساب المواعيد المتاحة حسب اليوم
-  ================================= */
   useEffect(() => {
     if (!weekSchedule.length) return;
 
@@ -88,9 +79,6 @@ export default function Booking() {
     setSelectedTime(null);
   }, [selectedDate, weekSchedule, appointments]);
 
-  /* ================================
-     إرسال الحجز
-  ================================= */
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -109,10 +97,6 @@ export default function Booking() {
       description,
       status: "inProgress",
     };
-    //show selected date
-    console.log(selectedDate, selectedDate.toLocaleDateString("en-CA"));
-    //show booking data
-    console.log(bookingData);
 
     try {
       const response = await fetch("https://localhost:54246/api/Appointment", {
@@ -152,9 +136,7 @@ export default function Booking() {
         // schedule reminder 1 day before (in-app)
         const apptIso = `${bookingData.appointment_Date}T${bookingData.appointment_Time}`;
         const apptDate = new Date(apptIso);
-        console.log(apptDate); // هيظهر التاريخ الصحيح
         const remindAt = apptDate.getTime() - 24 * 60 * 60 * 1000;
-        console.log(remindAt, Date.now()); // يوضح الفرق بدقة
         const now = Date.now();
         const reminderForPatient = () =>
           createNotification({

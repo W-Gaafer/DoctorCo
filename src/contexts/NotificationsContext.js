@@ -37,9 +37,7 @@ export function NotificationsProvider({ children }) {
         setAllNotifications(
           storedNotifications ? JSON.parse(storedNotifications) : []
         );
-      } catch (e) {
-        // ignore
-      }
+      } catch (e) {}
     }, 30000);
 
     return () => {
@@ -48,7 +46,6 @@ export function NotificationsProvider({ children }) {
     };
   }, []);
 
-  // Filter notifications for current user and sort by newest first
   const notifications = (() => {
     if (!user) return [];
     const ids = [user.userId, user.id, user.email, user.phoneNumber]
@@ -59,9 +56,7 @@ export function NotificationsProvider({ children }) {
       .filter((n) => ids.includes(String(n.recipientId)))
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // الأحدث فوق
 
-    // Debug
     if (allNotifications.length > 0 && matched.length === 0) {
-      // eslint-disable-next-line no-console
       console.warn(
         "Notifications present but none matched current user. user ids:",
         ids,

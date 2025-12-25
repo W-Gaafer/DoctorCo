@@ -34,7 +34,6 @@ export default function Login() {
       const data = await response.json();
       console.log("Logged in user:", data);
 
-      // 🔑 نستخدم Context لتخزين التوكن وبيانات المستخدم
       login(data.user, data.token);
     } catch (err) {
       console.error(err);

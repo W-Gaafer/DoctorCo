@@ -1,4 +1,3 @@
-// DoctorProfile.js
 import styles from "./DoctorProfile.module.css";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
